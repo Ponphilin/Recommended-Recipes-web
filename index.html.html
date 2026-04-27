@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recommended Recipes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #FAF7F2;
+    --sand: #EDE8DF;
+    --warm: #C8A97E;
+    --accent: #C1440E;
+    --dark: #1A1410;
+    --text: #3D3530;
+    --muted: #9E8E82;
+    --card-w: 220px;
+    --card-h: 300px;
+    --radius: 16px;
+    --gap: 20px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── DECORATIVE BG ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 600px 400px at 80% 10%, rgba(200,169,126,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 300px at 10% 80%, rgba(193,68,14,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAVBAR ── */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(250,247,242,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(200,169,126,0.25);
+    padding: 0 clamp(16px, 5vw, 60px);
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .navbar-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--dark);
+    letter-spacing: -0.5px;
+  }
+
+  .navbar-logo span { color: var(--accent); }
+
+  .navbar-nav {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .navbar-nav a {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.3px;
+    transition: color 0.2s;
+  }
+
+  .navbar-nav a:hover { color: var(--accent); }
+
+  .navbar-cta {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    padding: 8px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+
+  .navbar-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--dark);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+
+  /* ── HERO SECTION ── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    padding: clamp(48px, 8vw, 96px) clamp(16px, 5vw, 60px) 40px;
+  }
+
+  .hero-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .hero-label::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1.5px;
+    background: var(--accent);
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--dark);
+    max-width: 520px;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--warm);
+  }
+
+  .hero-sub {
+    margin-top: 16px;
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--muted);
+    max-width: 380px;
+    line-height: 1.7;
+  }
+
+  /* ── FILTER TABS ── */
+  .filter-bar {
+    position: relative;
+    z-index: 1;
+    padding: 0 clamp(16px, 5vw, 60px);
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+
+  .filter-btn {
+    padding: 8px 18px;
+    border-radius: 24px;
+    border: 1.5px solid var(--sand);
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+  }
+
+  /* ── CAROUSEL SECTION ── */
+  .section {
+    position: relative;
+    z-index: 1;
+    padding: 0 clamp(16px, 5vw, 60px) 80px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+
+  .section-title-wrap .eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 3.5vw, 34px);
+    font-weight: 700;
+    color: var(--dark);
+  }
+
+  .section-title em { font-style: italic; color: var(--warm); }
+
+  .see-all {
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--sand);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+  }
+
+  .see-all:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ── CAROUSEL ── */
+  .carousel-wrap {
+    position: relative;
+  }
+
+  .carousel {
+    display: flex;
+    gap: var(--gap);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 16px;
+    cursor: grab;
+  }
+
+  .carousel:active { cursor: grabbing; }
+
+  .carousel::-webkit-scrollbar { height: 4px; }
+  .carousel::-webkit-scrollbar-track { background: var(--sand); border-radius: 2px; }
+  .carousel::-webkit-scrollbar-thumb { background: var(--warm); border-radius: 2px; }
+
+  /* ── RECIPE CARD COMPONENT ── */
+  .recipe-card {
+    flex: 0 0 var(--card-w);
+    scroll-snap-align: start;
+    background: #fff;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(26,20,16,0.06);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    position: relative;
+    animation: cardIn 0.5s ease both;
+  }
+
+  .recipe-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(26,20,16,0.14);
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .recipe-card:nth-child(1) { animation-delay: 0.05s; }
+  .recipe-card:nth-child(2) { animation-delay: 0.10s; }
+  .recipe-card:nth-child(3) { animation-delay: 0.15s; }
+  .recipe-card:nth-child(4) { animation-delay: 0.20s; }
+  .recipe-card:nth-child(5) { animation-delay: 0.25s; }
+  .recipe-card:nth-child(6) { animation-delay: 0.30s; }
+  .recipe-card:nth-child(7) { animation-delay: 0.35s; }
+
+  .card-img-wrap {
+    position: relative;
+    height: 160px;
+    overflow: hidden;
+  }
+
+  .card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+  }
+
+  .recipe-card:hover .card-img { transform: scale(1.08); }
+
+  .card-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(250,247,242,0.92);
+    backdrop-filter: blur(6px);
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .card-save {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(250,247,242,0.92);
+    backdrop-filter: blur(6px);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+
+  .card-save:hover { background: var(--accent); }
+  .card-save:hover svg { stroke: #fff; }
+  .card-save.saved { background: var(--accent); }
+  .card-save.saved svg { stroke: #fff; fill: #fff; }
+
+  .card-body {
+    padding: 14px 16px 16px;
+  }
+
+  .card-cat {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--warm);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1.3;
+    margin-bottom: 10px;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .meta-item svg {
+    width: 12px;
+    height: 12px;
+    stroke: var(--warm);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .card-rating {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--dark);
+  }
+
+  .star { color: #F5A623; font-size: 10px; }
+
+  /* ── FEATURED SECTION ── */
+  .featured-section {
+    position: relative;
+    z-index: 1;
+    padding: 0 clamp(16px, 5vw, 60px) 80px;
+  }
+
+  .featured-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .featured-card {
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    transition: transform 0.3s;
+  }
+
+  .featured-card:hover { transform: scale(1.015); }
+
+  .featured-card:first-child {
+    grid-column: 1 / -1;
+    min-height: 340px;
+  }
+
+  .featured-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+  }
+
+  .featured-card:hover .featured-img { transform: scale(1.05); }
+
+  .featured-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(26,20,16,0.85) 0%, transparent 55%);
+  }
+
+  .featured-body {
+    position: relative;
+    padding: 24px;
+    color: #fff;
+  }
+
+  .featured-cat {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--warm);
+    margin-bottom: 8px;
+  }
+
+  .featured-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(18px, 2.5vw, 26px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .featured-meta {
+    display: flex;
+    gap: 14px;
+  }
+
+  .featured-meta .meta-item { color: rgba(255,255,255,0.7); }
+  .featured-meta .meta-item svg { stroke: var(--warm); }
+
+  /* ── NAV ARROWS ── */
+  .carousel-nav {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: flex-end;
+  }
+
+  .nav-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1.5px solid var(--sand);
+    background: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .nav-btn:hover {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+
+  .nav-btn:hover svg { stroke: #fff; }
+  .nav-btn svg { stroke: var(--muted); fill: none; stroke-width: 2; stroke-linecap: round; width: 16px; height: 16px; }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    background: var(--dark);
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    padding: 32px;
+    font-size: 13px;
+  }
+
+  footer strong { color: var(--warm); font-weight: 500; }
+
+  /* ── MOBILE NAV DRAWER ── */
+  .mobile-nav {
+    position: fixed;
+    top: 64px;
+    left: 0; right: 0;
+    background: rgba(250,247,242,0.97);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--sand);
+    padding: 20px clamp(16px, 5vw, 60px);
+    display: none;
+    flex-direction: column;
+    gap: 16px;
+    z-index: 99;
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: all 0.25s;
+  }
+
+  .mobile-nav.open { transform: translateY(0); opacity: 1; }
+  .mobile-nav a { font-size: 16px; color: var(--text); text-decoration: none; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .navbar-nav, .navbar-cta { display: none; }
+    .hamburger { display: flex; }
+    .mobile-nav { display: flex; }
+
+    :root { --card-w: 180px; --card-h: 260px; }
+
+    .featured-grid { grid-template-columns: 1fr; }
+    .featured-card:first-child { grid-column: auto; min-height: 260px; }
+    .hero-title { font-size: clamp(28px, 8vw, 48px); }
+    .section-header { flex-direction: column; gap: 8px; }
+  }
+
+  @media (max-width: 480px) {
+    :root { --card-w: 160px; }
+    .card-img-wrap { height: 130px; }
+    .featured-grid { gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COMPONENT: Navbar -->
+<nav class="navbar">
+  <div class="navbar-logo">Recipe<span>.</span></div>
+  <ul class="navbar-nav">
+    <li><a href="#">Discover</a></li>
+    <li><a href="#">Collections</a></li>
+    <li><a href="#">Chef's Pick</a></li>
+    <li><a href="#">About</a></li>
+  </ul>
+  <button class="navbar-cta">Get Started</button>
+  <button class="hamburger" id="hamBtn" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="#">Discover</a>
+  <a href="#">Collections</a>
+  <a href="#">Chef's Pick</a>
+  <a href="#">About</a>
+</div>
+
+<!-- COMPONENT: Hero -->
+<section class="hero">
+  <div class="hero-label">Curated for you</div>
+  <h1 class="hero-title">Recipes Worth <em>Savoring</em></h1>
+  <p class="hero-sub">Hand-picked dishes from around the world, crafted for every moment.</p>
+</section>
+
+<!-- COMPONENT: Filter Bar -->
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="setFilter(this,'all')">All</button>
+  <button class="filter-btn" onclick="setFilter(this,'thai')">Thai</button>
+  <button class="filter-btn" onclick="setFilter(this,'asian')">Asian</button>
+  <button class="filter-btn" onclick="setFilter(this,'salad')">Salad</button>
+  <button class="filter-btn" onclick="setFilter(this,'dessert')">Dessert</button>
+  <button class="filter-btn" onclick="setFilter(this,'quick')">Quick &lt;30 min</button>
+</div>
+
+<!-- COMPONENT: Recommended Carousel -->
+<section class="section">
+  <div class="section-header">
+    <div class="section-title-wrap">
+      <div class="eyebrow">Recommended</div>
+      <h2 class="section-title">Popular <em>Recipes</em></h2>
+    </div>
+    <a href="#" class="see-all">See all →</a>
+  </div>
+
+  <div class="carousel-wrap">
+    <div class="carousel" id="mainCarousel">
+
+      <!-- Recipe Card Component × 7 -->
+      <div class="recipe-card" data-tags="thai,asian">
+        <div class="card-img-wrap">
+          <img class="card-img" src="https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400&q=80" alt="Thang Noodle">
+          <span class="card-badge">Thai</span>
+          <button class="card-save" onclick="toggleSave(this)" aria-label="Save">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;fill:none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Noodle</div>
+          <div class="card-title">Thang Noodle</div>
+          <div class="card-meta">
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              20 mins
+            </span>
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              4 servings
+            </span>
+            <span class="card-rating"><span class="star">★</span> 4.8</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="recipe-card" data-tags="thai,dessert">
+        <div class="card-img-wrap">
+          <img class="card-img" src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80" alt="Mango Sticky Rice">
+          <span class="card-badge">Dessert</span>
+          <button class="card-save" onclick="toggleSave(this)" aria-label="Save">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;fill:none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Dessert</div>
+          <div class="card-title">Mango Sticky Rice</div>
+          <div class="card-meta">
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              25 mins
+            </span>
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              4 servings
+            </span>
+            <span class="card-rating"><span class="star">★</span> 4.9</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="recipe-card" data-tags="salad,quick">
+        <div class="card-img-wrap">
+          <img class="card-img" src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80" alt="Corn Spicy Salad">
+          <span class="card-badge">Salad</span>
+          <button class="card-save" onclick="toggleSave(this)" aria-label="Save">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;fill:none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Salad</div>
+          <div class="card-title">Corn Spicy Salad</div>
+          <div class="card-meta">
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              15 mins
+            </span>
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              2 servings
+            </span>
+            <span class="card-rating"><span class="star">★</span> 4.7</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="recipe-card" data-tags="asian,quick">
+        <div class="card-img-wrap">
+          <img class="card-img" src="https://images.unsplash.com/photo-1559314809-0d155014e29e?w=400&q=80" alt="Pad Thai">
+          <span class="card-badge">Asian</span>
+          <button class="card-save" onclick="toggleSave(this)" aria-label="Save">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;fill:none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Stir Fry</div>
+          <div class="card-title">Classic Pad Thai</div>
+          <div class="card-meta">
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              20 mins
+            </span>
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              2 servings
+            </span>
+            <span class="card-rating"><span class="star">★</span> 4.8</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="recipe-card" data-tags="thai">
+        <div class="card-img-wrap">
+          <img class="card-img" src="https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=400&q=80" alt="Tom Yum">
+          <span class="card-badge">Thai</span>
+          <button class="card-save" onclick="toggleSave(this)" aria-label="Save">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;fill:none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Soup</div>
+          <div class="card-title">Tom Yum Goong</div>
+          <div class="card-meta">
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              30 mins
+            </span>
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              3 servings
+            </span>
+            <span class="card-rating"><span class="star">★</span> 4.9</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="recipe-card" data-tags="salad,quick">
+        <div class="card-img-wrap">
+          <img class="card-img" src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&q=80" alt="Garden Salad">
+          <span class="card-badge">Fresh</span>
+          <button class="card-save" onclick="toggleSave(this)" aria-label="Save">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;fill:none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Salad</div>
+          <div class="card-title">Garden Fresh Bowl</div>
+          <div class="card-meta">
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              10 mins
+            </span>
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              1 serving
+            </span>
+            <span class="card-rating"><span class="star">★</span> 4.5</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="recipe-card" data-tags="dessert">
+        <div class="card-img-wrap">
+          <img class="card-img" src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&q=80" alt="Thai Pudding">
+          <span class="card-badge">Dessert</span>
+          <button class="card-save" onclick="toggleSave(this)" aria-label="Save">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;fill:none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Dessert</div>
+          <div class="card-title">Coconut Panna Cotta</div>
+          <div class="card-meta">
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              35 mins
+            </span>
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              4 servings
+            </span>
+            <span class="card-rating"><span class="star">★</span> 4.7</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /carousel -->
+
+    <div class="carousel-nav">
+      <button class="nav-btn" id="prevBtn" aria-label="Previous">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="nav-btn" id="nextBtn" aria-label="Next">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+
+<!-- COMPONENT: Footer -->
+<footer>
+  Made with ❤️ · <strong>Recipe.</strong> · All rights reserved 2025
+</footer>
+
+<script>
+  // Hamburger menu
+  const hamBtn = document.getElementById('hamBtn');
+  const mobileNav = document.getElementById('mobileNav');
+  hamBtn.addEventListener('click', () => {
+    mobileNav.classList.toggle('open');
+  });
+
+  // Carousel scroll
+  const carousel = document.getElementById('mainCarousel');
+  const cardW = () => carousel.querySelector('.recipe-card').offsetWidth + 20;
+
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    carousel.scrollBy({ left: cardW() * 2, behavior: 'smooth' });
+  });
+  document.getElementById('prevBtn').addEventListener('click', () => {
+    carousel.scrollBy({ left: -cardW() * 2, behavior: 'smooth' });
+  });
+
+  // Drag-to-scroll carousel
+  let isDown = false, startX, scrollLeft;
+  carousel.addEventListener('mousedown', e => {
+    isDown = true;
+    startX = e.pageX - carousel.offsetLeft;
+    scrollLeft = carousel.scrollLeft;
+  });
+  carousel.addEventListener('mouseleave', () => isDown = false);
+  carousel.addEventListener('mouseup', () => isDown = false);
+  carousel.addEventListener('mousemove', e => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - carousel.offsetLeft;
+    carousel.scrollLeft = scrollLeft - (x - startX) * 1.2;
+  });
+
+  // Save toggle
+  function toggleSave(btn) {
+    btn.classList.toggle('saved');
+    const svg = btn.querySelector('svg');
+    svg.style.fill = btn.classList.contains('saved') ? '#fff' : 'none';
+  }
+
+  // Filter
+  function setFilter(btn, tag) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.recipe-card').forEach(card => {
+      const tags = (card.dataset.tags || '').split(',');
+      card.style.display = (tag === 'all' || tags.includes(tag)) ? '' : 'none';
+    });
+  }
+</script>
+</body>
+</html>
